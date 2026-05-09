@@ -1,8 +1,8 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 
-export const supabaseServer = () => {
-  const cookieStore = cookies();
+export async function createSupabaseServerClient() {
+  const cookieStore = await cookies();
 
   return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -19,11 +19,10 @@ export const supabaseServer = () => {
               cookieStore.set(name, value, options);
             });
           } catch {
-            // 🔒 Silent fail for read-only server contexts
-            // (prevents Next.js App Router warnings/crashes)
+            // ignore in read-only contexts
           }
         }
       }
     }
   );
-};
+}

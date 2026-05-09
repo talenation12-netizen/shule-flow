@@ -2,9 +2,9 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export function middleware(req: NextRequest) {
-  const authCookie = req.cookies.get("sb-access-token");
+  const token = req.cookies.get("sb-access-token")?.value;
 
-  if (!authCookie && req.nextUrl.pathname.startsWith("/dashboard")) {
+  if (!token && req.nextUrl.pathname.startsWith("/dashboard")) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
 
