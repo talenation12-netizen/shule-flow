@@ -2,22 +2,27 @@
   "name": "worker",
   "version": "1.0.0",
   "description": "",
+  "private": true,
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "tsx src/index.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@supabase/supabase-js": "^2.105.4",
+    "@upstash/queue": "^1.0.1",
+    "@upstash/redis": "^1.38.0",
     "bullmq": "^5.76.6",
+    "dotenv": "^17.4.2",
     "ioredis": "^5.10.1",
     "zod": "^4.4.3"
   },
   "devDependencies": {
     "@types/node": "^22.15.3",
     "node": "link:@types\\node",
+    "ts-node": "^10.9.2",
     "tsx": "^4.21.0",
     "typescript": "^6.0.3"
   }
