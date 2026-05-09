@@ -1,54 +1,33 @@
 import { NextResponse } from "next/server";
-import { supabase } from "../../../../lib/supabaseClient";
+import { createClient } from "@supabase/supabase-js";
 
 export async function POST(req: Request) {
   try {
-    const payload = await req.json();
+    const body = await req.json();
 
-    const callback = payload?.Body?.stkCallback;
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    );
 
-    const items = callback?.CallbackMetadata?.Item || [];
+    console.log("📩 MPESA webhook received:", body);
 
-    const getValue = (name: string) =>
-      items.find((i: any) => i.Name === name)?.Value;
-
-    const mpesaReceipt =
-      getValue("MpesaReceiptNumber") || callback?.CheckoutRequestID;
-
-    const amount = getValue("Amount");
-    const phone = getValue("PhoneNumber");
-
-    if (!mpesaReceipt) {
-      return NextResponse.json({ error: "Invalid payload" }, { status: 400 });
-    }
-
-    // store payment
-    const { data: payment, error } = await supabase
-      .from("payments")
-      .insert({
-        mpesa_receipt: mpesaReceipt,
-        amount: Number(amount),
-        phone_number: phone,
-        raw_payload: payload,
-        status: "queued"
-      })
-      .select()
-      .single();
+    const { error } = await supabase.from("payments").insert({
+      mpesa_receipt: body?.TransID,
+      amount: body?.TransAmount,
+      phone_number: body?.MSISDN,
+      raw_payload: body,
+      status: "processed"
+    });
 
     if (error) {
-      return NextResponse.json(
-        { error: "DB insert failed" },
-        { status: 500 }
-      );
+      console.error("DB error:", error);
     }
 
-    return NextResponse.json({
-      success: true,
-      paymentId: payment.id
-    });
+    return NextResponse.json({ ok: true });
   } catch (err) {
     return NextResponse.json(
-      { error: "Server error" },
+      { error: "Webhook failed" },
       { status: 500 }
     );
   }
