@@ -1,0 +1,24 @@
+{
+  "name": "worker",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.105.4",
+    "bullmq": "^5.76.6",
+    "ioredis": "^5.10.1",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.3",
+    "node": "link:@types\\node",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.3"
+  }
+}
